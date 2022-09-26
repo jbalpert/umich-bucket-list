@@ -1,8 +1,14 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 const rsvpSchema = new Schema({
-    event_id: String,
-    user_id: String,
+    event_id: {
+        type: String,
+        required: true,
+    },
+    user_id: {
+        type: String,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: new Date(),

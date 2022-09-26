@@ -4,7 +4,8 @@ import { getEventByIdService, getEventsService, createEventService, updateEventS
 // Get all events
 export const getEvents = async (req: Request, res: Response) => {
     try {
-        const events = await getEventsService();
+        const { startDate, endDate, eventApproval } = req.query;
+        const events = await getEventsService(eventApproval as string, startDate as string, endDate as string);
         res.status(200).json(events);
     } catch (error: any) {
         res.status(404).json({ message: error.message });
@@ -39,7 +40,7 @@ export const updateEvent = async (req: Request, res: Response) => {
     const event = req.body;
     try {
         const updatedEvent = await updateEventService(_id, event);
-        res.json(updatedEvent);
+        res.status(201).json(updatedEvent);
     }
     catch (error: any) {
         res.status(404).json({ message: error.message });
