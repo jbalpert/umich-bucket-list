@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getUsersService, getUserByIdService, createUserService, deleteUserService, updateUserService } from "../services/user";
+import { getUsersService, getUserByIdService, getUsersByEventIdService, createUserService, deleteUserService, updateUserService } from "../services/user";
 
 // Get all users
 export const getUsers = async (req: Request, res: Response) => {
@@ -23,9 +23,21 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 }
 
+// Get all the users that have RSVP'd to an event
+export const getUsersByEventId = async (req: Request, res: Response) => {
+    const { eventid } = req.params;
+    try {
+        const rsvps = await getUsersByEventIdService(eventid);
+        res.status(200).json(rsvps);
+    } catch (error: any) {
+        res.status(404).json({ message: error.message });
+    }
+}
+
 // Create a user
 export const createUser = async (req: Request, res: Response) => {
     const user = req.body;
+    console.log(user)
     try {
         const newUser = await createUserService(user);
         res.status(201).json(newUser);

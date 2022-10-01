@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getEventByIdService, getEventsService, createEventService, updateEventService, deleteEventService } from '../services/events';
+import { getEventByIdService, getEventsService, getEventsbyUserRsvpService, createEventService, rsvpService, unrsvpService, updateEventService, deleteEventService, } from '../services/events';
 
 // Get all events
 export const getEvents = async (req: Request, res: Response) => {
@@ -24,6 +24,17 @@ export const getEventById = async (req: Request, res: Response) => {
     }
 }
 
+// Get all events that a user has RSVP'd to
+export const getEventsByUserId = async (req: Request, res: Response) => {
+    const { userid } = req.params;
+    try {
+        const events = await getEventsbyUserRsvpService(userid);
+        res.status(200).json(events);
+    } catch (error: any) {
+        res.status(404).json({ message: error.message });
+    }
+}
+
 // Create an event
 export const createEvent = async (req: Request, res: Response) => {
     const event = req.body;
@@ -34,6 +45,28 @@ export const createEvent = async (req: Request, res: Response) => {
         res.status(409).json({ message: error.message });
     }
 }
+
+// RSVP to an event
+export const rsvpEvent = async (req: Request, res: Response) => {
+    const { eventid, userid } = req.params;
+    try {
+        const rsvp = await rsvpService(eventid, userid);
+        res.status(201).json(rsvp);
+    } catch (error: any) {
+        res.status(409).json({ message: error.message });
+    }
+}
+
+export const unrsvpEvent = async (req: Request, res: Response) => {
+    const { eventid, userid } = req.params;
+    try {
+        const unrsvp = await unrsvpService(eventid, userid);
+        res.status(201).json(unrsvp);
+    } catch (error: any) {
+        res.status(409).json({ message: error.message });
+    }
+}
+
 // Update an event
 export const updateEvent = async (req: Request, res: Response) => {
     const { id: _id } = req.params;

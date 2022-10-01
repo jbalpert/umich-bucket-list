@@ -3,25 +3,25 @@ const Schema = mongoose.Schema;
 const eventSchema = new Schema({
     title: {
         type: String,
-        required: true,
+        required: [true, 'Title is required'],
     },
     description: {
         type: String,
-        required: true,
+        required: [true, 'Description is required'],
     },
     start_date: {
         type: Date,
-        required: true,
+        required: [true, 'Start date is required'],
     },
     end_date: {
         type: Date,
-        required: true,
+        required: [true, 'End date is required'],
     },
     location: {
         type: String,
-        required: true,
+        required: [true, 'Location is required'],
     },
-    approved: {
+    approvedEvent: {
         type: Boolean,
         default: false,
         required: true,
@@ -30,7 +30,22 @@ const eventSchema = new Schema({
         type: Date,
         default: new Date(),
     },
-    created_by: String, // user id
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    rsvps: [
+        {
+            created: {
+                type: Date,
+                default: new Date(),
+            },
+            userid: {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        },
+    ],
 });
 
 const Event = mongoose.model('Event', eventSchema);
