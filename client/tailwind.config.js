@@ -12,6 +12,7 @@ module.exports = {
         accent: "#ed8936",
         muted: "#e2e8f0",
         modalBG: "rgba(0, 0, 0, 0.65)",
+        success: "#9ae6b4",
       },
       // text size
       fontSize: {

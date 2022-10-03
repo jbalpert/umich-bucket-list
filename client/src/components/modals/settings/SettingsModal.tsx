@@ -1,5 +1,6 @@
 import { UseUser } from "../../../contexts/UserContext";
-
+import { userApi } from "../../../api/user";
+import { useState } from "react";
 export interface Props {
   isFirstLogin: boolean;
   setIsFirstLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,6 +9,8 @@ export interface Props {
 
 const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props) => {
   const [user, setUser] = UseUser();
+  const [saved, setSaved] = useState(false);
+
   const closeHandler = () => {
     setSettingsOpen(false);
     if (isFirstLogin) {
@@ -18,6 +21,35 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
   const logoutAndClose = () => {
     setUser(null);
     closeHandler();
+  };
+
+  const [userSettings, setUserSettings] = useState({
+    username: user?.username,
+    phone: user?.phone,
+    is_public: user?.is_public,
+  });
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserSettings({ ...userSettings, [e.target.name]: e.target.value });
+  };
+
+  const checkHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserSettings({
+      ...userSettings,
+      ["is_public"]: e.target.name === "is_public" ? true : false,
+    });
+  };
+
+  const submitHandler = async () => {
+    if (user) {
+      const { data } = await userApi.updateUser(user._id, userSettings);
+      setUser(data);
+      setSaved(true);
+      setTimeout(() => {
+        setSaved(false);
+        closeHandler();
+      }, 1000);
+    }
   };
 
   return (
@@ -41,6 +73,15 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
             <div className="mt-2">
               <div className="flex flex-col">
                 <div className="flex flex-col mt-4">
+                  {saved && (
+                    <div className="flex flex-row justify-center">
+                      <div className="flex flex-col">
+                        <h2 className="text-2xl text-bold bg-success px-4 py-2 rounded mb-2">
+                          Successfully Updated Profile!
+                        </h2>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex flex-row justify-center">
                     <div className="h-24 w-24 rounded-full bg-black">
                       <img
@@ -58,11 +99,12 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
                         Display Name
                       </label>
                       <input
+                        onChange={changeHandler}
+                        value={userSettings.username}
                         type="text"
-                        name="display_name"
+                        name="username"
                         id="display_name"
                         className="border-2 border-gray-400 p-2 rounded-md flex-1 mx-4"
-                        defaultValue={user?.first_name + " " + user?.last_name}
                       />
                     </div>
                     <div className="flex flex-row mt-4 align-middle justify-between">
@@ -72,11 +114,13 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
                         Cell Phone
                       </label>
                       <input
+                        onChange={changeHandler}
+                        value={userSettings.phone}
                         type="text"
-                        name="display_name"
-                        id="display_name"
+                        name="phone"
+                        id="phone_number"
                         className="border-2 border-gray-400 p-2 rounded-md flex-1 mr-4 ml-11"
-                        defaultValue={"(123) 456-7890"}
+                        defaultValue={user?.phone}
                       />
                     </div>
                   </div>
@@ -84,8 +128,10 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
                     <span className="text-lg font-bold ">Publicity</span>
                     <div className="flex items-center ml-4">
                       <input
+                        onChange={checkHandler}
+                        checked={userSettings.is_public}
                         id="public"
-                        name="publicity"
+                        name="is_public"
                         type="radio"
                         className="form-radio h-4 w-4 text-navbarBG focus:ring-navbarBG cursor-pointer"
                       />
@@ -95,8 +141,10 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
                     </div>
                     <div className="flex items-center ml-4">
                       <input
+                        onChange={checkHandler}
+                        checked={!userSettings.is_public}
                         id="private"
-                        name="publicity"
+                        name="is_private"
                         type="radio"
                         className="form-radio h-4 w-4 text-navbarBG focus:ring-navbarBG cursor-pointer"
                       />
@@ -120,6 +168,7 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
       </div>
       <div className="bg-accentnavbarBG px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
         <button
+          onClick={() => submitHandler()}
           type="button"
           className="mt-3 w-full inline-flex justify-center rounded-md shadow-sm px-4 py-2 bg-white text-base font-medium text-black hover:bg-umMaize focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
           Save
@@ -128,7 +177,7 @@ const SettingsModal = ({ isFirstLogin, setSettingsOpen, setIsFirstLogin }: Props
           onClick={() => closeHandler()}
           type="button"
           className="mt-3 w-full inline-flex justify-center rounded-md shadow-sm px-4 py-2 bg-white text-base font-medium text-black hover:bg-umMaize focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-          Cancel
+          Close
         </button>
       </div>
     </div>

@@ -50,6 +50,10 @@ const userSchema = new Schema({
         type: String,
         required: [true, "Profile picture is required"],
     },
+    is_public: {
+        type: Boolean,
+        default: true,
+    },
     createdAt: {
         type: Date,
         default: new Date(),

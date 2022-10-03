@@ -1,18 +1,17 @@
-// import context from react
 import React, { createContext, useContext, useState } from "react";
 import { IUserContext, IUser } from "../types";
-// create context
 const UserContext = createContext<IUserContext>([null, () => {}]);
-// create provider
 
 type Props = {
   children?: React.ReactNode;
 };
 
+// TODO have a cleaner global state management
 const UserProvider: React.FC<Props> = ({ children }) => {
   const userDatum = useState<IUser | null>(null);
   return <UserContext.Provider value={userDatum}>{children}</UserContext.Provider>;
 };
+
 // create hook
 const UseUser = () => {
   const context = useContext(UserContext);

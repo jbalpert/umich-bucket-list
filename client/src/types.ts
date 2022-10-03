@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface IRsvp {
     _id: string;
     created: Date;
@@ -5,13 +7,13 @@ export interface IRsvp {
 }
 
 export interface IEvent {
-    _id?: string;
+    _id: string;
     title: string;
     description: string;
     location: string;
     start_date: string;
     end_date: string;
-    rsvps: Array<IRsvp>;
+    rsvps: IRsvp[];
     approval: boolean;
     creator: string;
     created_at?: Date;
@@ -54,8 +56,10 @@ export interface IUser {
     email: string;
     google_id: string;
     profile_picture: string;
+    is_public: boolean;
     createdAt: string;
-    events?: (null)[] | null;
+    phone?: string;
+    events: Array<string>;
     __v: number;
 }
 
@@ -87,6 +91,22 @@ export interface Env {
 export interface Request {
 }
 
+// export interface IModal {
+//     title: string;
+//     isOpen: boolean;
+//     component: React.ReactNode;
+// }
 
+// export interface IModalContext {
+//     modal: IModal[];
+//     setModal: React.Dispatch<React.SetStateAction<IModal[]>>;
+// }
+
+// export interface IGlobalState {
+//     userState: IUserContext;
+//     modalState: IModalContext;
+//     isFirstLogin: boolean;
+//     googleLogin: () => void;
+// }
 
 export type IUserContext = [IUser | null, React.Dispatch<React.SetStateAction<IUser | null>>];

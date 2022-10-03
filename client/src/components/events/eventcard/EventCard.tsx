@@ -1,9 +1,50 @@
-import { Link } from "react-router-dom";
 import { IEvent } from "../../../types";
+import { UseUser } from "../../../contexts/UserContext";
+import { eventApi } from "../../../api/event";
+import { useEffect, useState } from "react";
 
-// simple card component that displays title on top, image in middle, description on bottom, join button on bottom right, and location on bottom left
-const EventCard = ({ event }: { event: IEvent }) => {
-  const hasJoined = false;
+interface Props {
+  event: IEvent;
+  googleLogin: () => void;
+}
+
+const EventCard = ({ event, googleLogin }: Props) => {
+  const [user, setUser] = UseUser();
+  const [joined, setJoined] = useState(false);
+
+  useEffect(() => {
+    if (user && user.events) {
+      const joined = user.events.includes(event._id);
+      console.log(joined, event._id);
+      setJoined(joined ? true : false);
+    }
+  }, [user, event]);
+
+  useEffect(() => {
+    if (!user) {
+      setJoined(false);
+    }
+  }, [user]);
+
+  const rsvpHandler = async () => {
+    if (!user) {
+      googleLogin();
+    } else {
+      await eventApi.rsvpEvent(event._id, user._id);
+      setUser({ ...user, events: [...user.events, event._id] });
+    }
+  };
+
+  const unRsvpHandler = async () => {
+    console.log("unrsvp");
+    if (!user) {
+      googleLogin();
+    } else {
+      await eventApi.unrsvpEvent(event._id, user._id);
+      setUser({ ...user, events: user.events.filter((e) => e !== event._id) });
+    }
+  };
+
   const startDate = new Date(event.start_date);
   const month = startDate.toLocaleString("default", { month: "short" });
   const day = startDate.getDate();
@@ -31,16 +72,16 @@ const EventCard = ({ event }: { event: IEvent }) => {
           </div>
         </div>
         <div className="flex flex-row lg:pb-0 pb-4 justify-around font-bold leading-none text-gray-800 uppercase rounded lg:flex-col lg:items-center lg:justify-center lg:w-1/4">
-          <Link
-            to={hasJoined ? `/events/${event._id}/unrsvp` : `/events/${event._id}/rsvp`}
-            className={`flex flex-row items-center justify-center w-24 h-10 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 ${
-              hasJoined
+          <div
+            onClick={joined ? unRsvpHandler : rsvpHandler}
+            className={`flex flex-row items-center justify-center w-24 h-10 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 cursor-pointer ${
+              joined
                 ? "bg-red-500 hover:bg-red-600 active:bg-red-600"
                 : "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-600"
             } border border-transparent rounded-lg focus:outline-none focus:shadow-outline-yellow`}>
-            <span className="mr-2">{hasJoined ? "-" : "+"}</span>
-            <span>{hasJoined ? "leave" : "join"}</span>
-          </Link>
+            <span className="mr-2">{joined ? "-" : "+"}</span>
+            <span>{joined ? "leave" : "join"}</span>
+          </div>
         </div>
       </div>
     </div>

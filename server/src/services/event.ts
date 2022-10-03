@@ -59,10 +59,9 @@ export const unrsvpService = async (eventId: string, userId: string) => {
     const hasRsvped = await User.findOne({ _id: userId, events: eventId });
     if (!hasRsvped) throw Error('User has not RSVPd to this event');
 
-    const user = await User.updateOne({ _id: userId }, { $pull: { rsvps: eventId } });
+    const user = await User.updateOne({ _id: userId }, { $pull: { events: eventId } });
     // remove the user id from the event's rsvp list
-    if (!mongoose.Types.ObjectId.isValid(eventId)) throw Error('No event with that id');
-    const event = await Event.updateOne({ _id: eventId }, { $pull: { rsvps: { events: userId } } });
+    const event = await Event.updateOne({ _id: eventId }, { $pull: { rsvps: { userid: userId } } });
     return { event, user };
 }
 

@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import EventsGrid from "./EventsGrid";
 import { eventApi } from "../../api/event";
-import CreateEventModal from "./CreateEventModal";
 
-const EventHero = () => {
+interface Props {
+  googleLogin: () => void;
+}
+
+const EventHero: React.FC<Props> = ({ googleLogin }: Props) => {
   // set events with axios call
   const [events, setEvents] = useState([]);
   useEffect(() => {
@@ -16,7 +19,6 @@ const EventHero = () => {
         console.log(err);
       });
   }, []);
-  const [showModal, setShowModal] = useState(false);
   return (
     <div className="bg-appBG flex flex-col items-center justify-center">
       <h1 className="text-center mt-12 text-xl sm:text-3xl text-slate-300 mx-8">
@@ -27,7 +29,7 @@ const EventHero = () => {
         so join me to complete my bucket list :)
       </h1>
       <div className="max-w-5xl my-12">
-        <EventsGrid events={events} />
+        <EventsGrid googleLogin={googleLogin} events={events} />
       </div>
     </div>
   );

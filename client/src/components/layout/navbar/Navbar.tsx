@@ -1,27 +1,16 @@
 // TODO LOGIN AUTHENTICATION + SIGNUP / LOGIN MODAL
-import { useGoogleLogin } from "@react-oauth/google";
-import { authApi } from "../../../api/auth";
+
 import { UseUser } from "../../../contexts/UserContext";
 
 interface Props {
   setSettingsOpen: (value: boolean) => void;
   setFirstLogged: (value: boolean) => void;
+  googleLogin: () => void;
 }
 
-const Navbar: React.FC<Props> = ({ setSettingsOpen, setFirstLogged }: Props) => {
+const Navbar: React.FC<Props> = ({ setSettingsOpen, setFirstLogged, googleLogin }: Props) => {
   // send request to backend to get user info
   const [user, setUser] = UseUser();
-  const googleLogin = useGoogleLogin({
-    onSuccess: async ({ code }) => {
-      const {
-        data: { userFromDB, isNewUser },
-      } = await authApi.google(code);
-      setUser(userFromDB);
-      setFirstLogged(isNewUser);
-      setSettingsOpen(isNewUser);
-    },
-    flow: "auth-code",
-  });
   return (
     <nav className="flex items-center justify-between flex-wrap bg-navbarBG p-6">
       <div className="flex items-center flex-shrink-0 text-umMaize mr-2 sm:mr-6">
