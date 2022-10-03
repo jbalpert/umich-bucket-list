@@ -1,7 +1,6 @@
 import Event from '../models/event';
 import User from '../models/user';
 import mongoose from 'mongoose';
-
 // Crud Operations --> Create, Read One/ Read Many, Update, Delete <--
 
 export const getEventByIdService = async (id: string) => {
@@ -11,15 +10,13 @@ export const getEventByIdService = async (id: string) => {
 }
 
 // Get all events filter by date range denoted by start_date and end_date, default is set to get all upcoming events
-export const getEventsService = async (eventApproval: string, startDate?: string, endDate = "12/12/3000") => {
+export const getEventsService = async (approval?: string, startDate?: string, endDate = "12/12/3000") => {
     const events = await Event.find({
-        start_date: {
-            $gte: startDate || new Date().toISOString(),
-            $lte: endDate
-        },
-        approved: eventApproval
+        start_date: { $gte: startDate, $lte: endDate },
+        // if approval is true return all approved events, if false return all unapproved events, else return all events
+        approval: approval === "true" ? true : approval === "false" ? false : { $in: [true, false] },
     });
-
+    if (!events) throw Error('No events found');
     return events;
 }
 
@@ -27,6 +24,7 @@ export const getEventsService = async (eventApproval: string, startDate?: string
 export const getEventsbyUserRsvpService = async (userId: string) => {
     // query the events table for rsvp events by user id
     const events = await Event.find({ rsvps: { $elemMatch: { userid: userId } } });
+    if (!events) throw Error('No events found');
     return events;
 }
 

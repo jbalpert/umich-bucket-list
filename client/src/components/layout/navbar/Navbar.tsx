@@ -1,11 +1,27 @@
 // TODO LOGIN AUTHENTICATION + SIGNUP / LOGIN MODAL
-const Navbar: React.FC = () => {
-  const isLoggedin = false;
-  const profile = {
-    name: "John Doe",
-    email: "jondoe@gmail.com",
-    avatar: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200",
-  };
+import { useGoogleLogin } from "@react-oauth/google";
+import { authApi } from "../../../api/auth";
+import { UseUser } from "../../../contexts/UserContext";
+
+interface Props {
+  setSettingsOpen: (value: boolean) => void;
+  setFirstLogged: (value: boolean) => void;
+}
+
+const Navbar: React.FC<Props> = ({ setSettingsOpen, setFirstLogged }: Props) => {
+  // send request to backend to get user info
+  const [user, setUser] = UseUser();
+  const googleLogin = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      const {
+        data: { userFromDB, isNewUser },
+      } = await authApi.google(code);
+      setUser(userFromDB);
+      setFirstLogged(isNewUser);
+      setSettingsOpen(isNewUser);
+    },
+    flow: "auth-code",
+  });
   return (
     <nav className="flex items-center justify-between flex-wrap bg-navbarBG p-6">
       <div className="flex items-center flex-shrink-0 text-umMaize mr-2 sm:mr-6">
@@ -13,23 +29,31 @@ const Navbar: React.FC = () => {
         <span className="font-semibold text-xl sm:text-3xl tracking-tight">Umich Bucket List</span>
       </div>
       <div>
-        {isLoggedin ? (
+        {user ? (
           <div className="flex items-center">
             <div className="flex items-center">
-              <img src={profile.avatar} alt="avatar" className="h-10 w-10 rounded-full mr-2" />
-              <span className="text-white font-semibold hidden md:block">{profile.name}</span>
+              <div className="h-10 w-10 rounded-full mr-4 bg-black">
+                <img
+                  onClick={() => setSettingsOpen(true)}
+                  src={user.profile_picture}
+                  alt="avatar"
+                  className="h-10 w-10 rounded-full cursor-pointer hover:opacity-80"
+                />
+              </div>
+              <span className="text-white font-semibold hidden md:block">{user.first_name}</span>
             </div>
-            <button className="bg-secondary hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full ml-4 hidden md:block">
+            <button
+              onClick={() => setUser(null)}
+              className="bg-secondary hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full ml-4 hidden md:block">
               Logout
             </button>
           </div>
         ) : (
-          <div className="flex items-center text-white text-2xs sm:text-base sm:font-bold">
-            <button className="bg-secondary hover:bg-gray-500 rounded-full py-2 px-2 sm:px-4 ">
+          <div className="flex items-center text-white text-sm md:text-base sm:font-bold">
+            <button
+              onClick={() => googleLogin()}
+              className="bg-secondary hover:bg-gray-500 rounded-full py-2 px-2 sm:px-4 ">
               Login
-            </button>
-            <button className="bg-secondary hover:bg-gray-500 rounded-full hidden sm:block sm:py-2 sm:px-4 sm:ml-4">
-              Sign Up
             </button>
           </div>
         )}

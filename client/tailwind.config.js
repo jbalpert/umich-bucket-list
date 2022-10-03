@@ -11,6 +11,7 @@ module.exports = {
         secondary: "#2d3748",
         accent: "#ed8936",
         muted: "#e2e8f0",
+        modalBG: "rgba(0, 0, 0, 0.65)",
       },
       // text size
       fontSize: {

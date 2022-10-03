@@ -1,6 +1,20 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
+// interface for the event model
+export interface IUser extends mongoose.Document {
+    _id?: string;
+    username: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    google_id: string;
+    profile_picture: string;
+    phone?: string;
+    created_at?: Date;
+    events: Array<string>;
+}
+
 const userSchema = new Schema({
     username: {
         type: String,
@@ -27,6 +41,15 @@ const userSchema = new Schema({
         type: String,
         match: [/^\d{10}$/, "Must be a valid 10 digit phone number"],
     },
+    google_id: {
+        type: String,
+        required: [true, "Google ID is required"],
+        unique: [true, "Google ID already exists"],
+    },
+    profile_picture: {
+        type: String,
+        required: [true, "Profile picture is required"],
+    },
     createdAt: {
         type: Date,
         default: new Date(),
@@ -37,7 +60,9 @@ const userSchema = new Schema({
             ref: 'Event',
         },
     ],
+
 });
 
-const User = mongoose.model("User", userSchema);
+
+const User = mongoose.model<IUser>("User", userSchema);
 export default User;

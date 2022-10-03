@@ -1,5 +1,27 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+
+// Make rsvp typescript safe
+export interface IRsvp {
+    _id: string;
+    created: Date;
+    userid: string;
+}
+
+// Make model typescript friendly
+export interface IEvent extends mongoose.Document {
+    _id?: string;
+    title: string;
+    description: string;
+    location: string;
+    start_date: Date;
+    end_date: Date;
+    rsvps: Array<IRsvp>;
+    approval: boolean;
+    creator: string;
+    created_at?: Date;
+}
+
 const eventSchema = new Schema({
     title: {
         type: String,
@@ -21,7 +43,7 @@ const eventSchema = new Schema({
         type: String,
         required: [true, 'Location is required'],
     },
-    approvedEvent: {
+    approval: {
         type: Boolean,
         default: false,
         required: true,
@@ -29,10 +51,13 @@ const eventSchema = new Schema({
     createdAt: {
         type: Date,
         default: new Date(),
+        required: true,
     },
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
+        default: "6338e2c6630f55761758f55a", // Jon's ID
     },
     rsvps: [
         {
@@ -42,11 +67,12 @@ const eventSchema = new Schema({
             },
             userid: {
                 type: Schema.Types.ObjectId,
+                required: [true, "userid is required"],
                 ref: 'User',
             },
         },
     ],
 });
 
-const Event = mongoose.model('Event', eventSchema);
+const Event = mongoose.model<IEvent>('Event', eventSchema);
 export default Event;

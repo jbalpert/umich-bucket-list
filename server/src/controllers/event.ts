@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { getEventByIdService, getEventsService, getEventsbyUserRsvpService, createEventService, rsvpService, unrsvpService, updateEventService, deleteEventService, } from '../services/events';
+import { getEventByIdService, getEventsService, getEventsbyUserRsvpService, createEventService, rsvpService, unrsvpService, updateEventService, deleteEventService, } from '../services/event';
 
-// Get all events
+// Get all events ensure typescript types are correct
 export const getEvents = async (req: Request, res: Response) => {
     try {
-        const { startDate, endDate, eventApproval } = req.query;
-        const events = await getEventsService(eventApproval as string, startDate as string, endDate as string);
+        const { startDate, endDate, approval } = req.query;
+        const events = await getEventsService(approval as string, startDate as string, endDate as string);
         res.status(200).json(events);
     } catch (error: any) {
         res.status(404).json({ message: error.message });

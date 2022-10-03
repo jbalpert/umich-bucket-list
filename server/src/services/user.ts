@@ -1,4 +1,4 @@
-import User from "../models/user";
+import User, { IUser } from "../models/user";
 import Event from "../models/event";
 import mongoose from "mongoose";
 
@@ -12,15 +12,27 @@ export const getUserByIdService = async (id: string) => {
 
 export const getUsersService = async () => {
     const users = await User.find();
+    if (!users) throw Error("No users in the database");
     return users;
 }
 
 export const getUsersByEventIdService = async (eventId: string) => {
     // return all users based on event id in events array
+    if (!mongoose.Types.ObjectId.isValid(eventId)) throw Error("No event with that id");
     const users = await User.find({ events: eventId });
+    if (!users) throw Error("No users registered for this event");
     return users;
 }
 
+export const getUserByEmailService = async (email: string) => {
+    const user = await User.findOne({ email });
+    return user;
+}
+
+export const getUserByGoogleIdService = async (googleId: string) => {
+    const user = await User.findOne({ googleId });
+    return user;
+}
 
 export const createUserService = async (user: any) => {
     const newUser = new User(user);
@@ -42,13 +54,4 @@ export const deleteUserService = async (id: string) => {
     return { deletedUser, deletedUserRsvp };
 }
 
-export const getUserByEmailService = async (email: string) => {
-    const user = await User.findOne({ email });
-    return user;
-}
-
-export const getUserByGoogleIdService = async (googleId: string) => {
-    const user = await User.findOne({ googleId });
-    return user;
-}
 

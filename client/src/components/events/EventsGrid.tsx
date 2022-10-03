@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import EventCard from "./eventcard/EventCard";
-import { Event } from "../../types/event.interface";
+import { IEvent } from "../../types";
 
-const EventsGrid = ({ events }: { events: Event[] }) => {
-  const data = events.map((event: Event) => <EventCard key={event.id} event={event} />);
+const EventsGrid = ({ events }: { events: IEvent[] }) => {
+  const data = events.map((event: IEvent) => <EventCard key={event._id} event={event} />);
   return <div className="mx-8"> {data} </div>;
 };
 

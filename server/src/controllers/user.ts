@@ -37,7 +37,6 @@ export const getUsersByEventId = async (req: Request, res: Response) => {
 // Create a user
 export const createUser = async (req: Request, res: Response) => {
     const user = req.body;
-    console.log(user)
     try {
         const newUser = await createUserService(user);
         res.status(201).json(newUser);

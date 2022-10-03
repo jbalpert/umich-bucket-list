@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
 import EventsGrid from "./EventsGrid";
+import { eventApi } from "../../api/event";
 import CreateEventModal from "./CreateEventModal";
-import eventdata from "./eventdata.json";
-import { Event } from "../../types/event.interface";
-import { useAppSelector } from "../../app/hooks";
-import { useAppDispatch } from "../../app/hooks";
+
 const EventHero = () => {
-  const dispatch = useAppDispatch();
-  dispatch({ type: "event/setEvents", payload: eventdata });
-  const events = useAppSelector((state) => state.event);
+  // set events with axios call
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    eventApi
+      .getCurrentEvents()
+      .then((res) => {
+        setEvents(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   const [showModal, setShowModal] = useState(false);
   return (
     <div className="bg-appBG flex flex-col items-center justify-center">
