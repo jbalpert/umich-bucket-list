@@ -35,7 +35,7 @@ const userSchema = new Schema({
         type: String,
         required: [true, "Email is required"],
         unique: [true, "Email already exists"],
-        match: [/^[a-zA-Z0-9_.+-]+@umich.edu$/, "Must be a valid umich email"]
+        match: [/^[a-zA-Z0-9_.+-]+@umich.edu$/, "Only umich.edu emails are allowed to login 〽️ Go BLUE!"],
     },
     phone: {
         type: String,

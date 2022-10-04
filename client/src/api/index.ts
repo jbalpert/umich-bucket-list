@@ -8,7 +8,7 @@ const axiosClient = axios.create({
 });
 
 axiosClient.defaults.withCredentials = true;
-// axios client will time out after 5 seconds
+// axios client will time out after 5 seconds if uncommented
 axiosClient.defaults.timeout = 5000;
 
 export default axiosClient;
