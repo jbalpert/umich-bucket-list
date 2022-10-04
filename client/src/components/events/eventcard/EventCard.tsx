@@ -2,16 +2,16 @@ import { IEvent } from "../../../types";
 import { UseUser } from "../../../contexts/UserContext";
 import { eventApi } from "../../../api/event";
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
+import { UseGlobalState } from "../../../contexts/GlobalStateContext";
 interface Props {
   event: IEvent;
-  googleLogin: () => void;
 }
 
-const EventCard = ({ event, googleLogin }: Props) => {
+const EventCard = ({ event }: Props) => {
   const [user, setUser] = UseUser();
   const [joined, setJoined] = useState(false);
-
+  const { googleLogin } = UseGlobalState();
   useEffect(() => {
     if (user && user.events) {
       const joined = user.events.includes(event._id);
@@ -57,20 +57,22 @@ const EventCard = ({ event, googleLogin }: Props) => {
   return (
     <div className="flex flex-col w-full hover:shadow-2xl hover:scale-105 hover:ease-in duration-100 bg-slate-100 rounded shadow-lg my-8">
       <div className="flex flex-col w-full lg:flex-row">
-        <div className="flex flex-row justify-around p-4 font-bold leading-none text-yellow-500 bg-navbarBG uppercase  rounded-l lg:flex-col lg:items-center lg:justify-center lg:w-1/4">
-          <div className="md:text-xl lg:text-2xl">{month}</div>
-          <div className="md:text-xl lg:text-5xl">{day}</div>
-          <div className="md:text-xl lg:text-xl text-center">{time}</div>
-        </div>
-        <div className="p-4 font-normal text-gray-800 lg:w-3/4 flex flex-col">
-          <h1 className="mb-4 text-3xl text-center lg:text-left lg:text-4xl font-bold leading-none tracking-tight text-gray-800">
-            {event.title}
-          </h1>
-          <p className="leading-normal text-sm ">{event.description}</p>
-          <div className="flex flex-row items-center mt-1 text-gray-700 font-bold">
-            {event.location}
+        <Link to={`event/${event._id}`} className="flex flex-col w-full lg:flex-row">
+          <div className="flex flex-row justify-around p-4 font-bold leading-none text-yellow-500 bg-navbarBG uppercase  rounded-l lg:flex-col lg:items-center lg:justify-center lg:w-1/4">
+            <div className="md:text-xl lg:text-2xl">{month}</div>
+            <div className="md:text-xl lg:text-5xl">{day}</div>
+            <div className="md:text-xl lg:text-xl text-center">{time}</div>
           </div>
-        </div>
+          <div className="p-4 font-normal text-gray-800 lg:w-3/4 flex flex-col">
+            <h1 className="mb-4 text-3xl text-center lg:text-left lg:text-4xl font-bold leading-none tracking-tight text-gray-800">
+              {event.title}
+            </h1>
+            <p className="leading-normal text-sm ">{event.description}</p>
+            <div className="flex flex-row items-center mt-1 text-gray-700 font-bold">
+              {event.location}
+            </div>
+          </div>
+        </Link>
         <div className="flex flex-row lg:pb-0 pb-4 justify-around font-bold leading-none text-gray-800 uppercase rounded lg:flex-col lg:items-center lg:justify-center lg:w-1/4">
           <div
             onClick={joined ? unRsvpHandler : rsvpHandler}

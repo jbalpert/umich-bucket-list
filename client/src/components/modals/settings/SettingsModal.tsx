@@ -2,24 +2,15 @@ import { UseUser } from "../../../contexts/UserContext";
 import { userApi } from "../../../api/user";
 import { useState } from "react";
 import Modal from "../../modals/Modal";
-export interface Props {
-  isFirstLogin: boolean;
-  isOpen: boolean;
-  setIsFirstLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  setSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { UseGlobalState } from "../../../contexts/GlobalStateContext";
 
-const SettingsModal: React.FC<Props> = ({
-  isFirstLogin,
-  isOpen,
-  setSettingsOpen,
-  setIsFirstLogin,
-}: Props) => {
+const SettingsModal: React.FC = () => {
   const [user, setUser] = UseUser();
   const [saved, setSaved] = useState(false);
+  const { isSettingsOpen, setIsSettingsOpen, isFirstLogin, setIsFirstLogin } = UseGlobalState();
 
   const closeHandler = () => {
-    setSettingsOpen(false);
+    setIsSettingsOpen(false);
     if (isFirstLogin) {
       setIsFirstLogin(false);
     }
@@ -61,7 +52,7 @@ const SettingsModal: React.FC<Props> = ({
 
   return (
     // settings buttons including public/private toggle, logout, setname, and set profile pic
-    <Modal isOpen={isOpen} setIsOpen={setSettingsOpen}>
+    <Modal isOpen={isSettingsOpen} setIsOpen={setIsSettingsOpen}>
       <div
         className="z-20 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
         role="dialog"

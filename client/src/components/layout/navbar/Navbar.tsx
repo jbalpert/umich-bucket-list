@@ -1,16 +1,11 @@
 // TODO LOGIN AUTHENTICATION + SIGNUP / LOGIN MODAL
 
 import { UseUser } from "../../../contexts/UserContext";
-
-interface Props {
-  setSettingsOpen: (value: boolean) => void;
-  setFirstLogged: (value: boolean) => void;
-  googleLogin: () => void;
-}
-
-const Navbar: React.FC<Props> = ({ setSettingsOpen, setFirstLogged, googleLogin }: Props) => {
+import { UseGlobalState } from "../../../contexts/GlobalStateContext";
+const Navbar: React.FC = () => {
   // send request to backend to get user info
   const [user, setUser] = UseUser();
+  const { setIsSettingsOpen, googleLogin } = UseGlobalState();
   return (
     <nav className="flex items-center justify-between flex-wrap bg-navbarBG p-6">
       <div className="flex items-center flex-shrink-0 text-umMaize mr-2 sm:mr-6">
@@ -23,7 +18,7 @@ const Navbar: React.FC<Props> = ({ setSettingsOpen, setFirstLogged, googleLogin 
             <div className="flex items-center">
               <div className="h-10 w-10 rounded-full mr-4 bg-black">
                 <img
-                  onClick={() => setSettingsOpen(true)}
+                  onClick={() => setIsSettingsOpen(true)}
                   src={user.profile_picture}
                   alt="avatar"
                   className="h-10 w-10 rounded-full cursor-pointer hover:opacity-80"

@@ -1,35 +1,25 @@
 import React, { useEffect } from "react";
 import Modal from "../Modal";
+import { UseGlobalState } from "../../../contexts/GlobalStateContext";
 
-export interface Props {
-  error: ErrorProps;
-  setError: React.Dispatch<React.SetStateAction<ErrorProps>>;
-  setErrorOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  errorOpen: boolean;
-}
-
-type ErrorProps = {
-  errorHeader: string;
-  errorDescription: string;
-};
-
-const ErrorModal: React.FC<Props> = ({ error, setError, setErrorOpen, errorOpen }: Props) => {
+const ErrorModal: React.FC = () => {
+  const { isErrorOpen, setIsErrorOpen, error, setError } = UseGlobalState();
   // have error open for 5 seconds unless user closes
   useEffect(() => {
     const timer = setTimeout(() => {
       setError({
-        errorHeader: "",
-        errorDescription: "",
+        header: "",
+        message: "",
       });
-      setErrorOpen(false);
+      setIsErrorOpen(false);
     }, 5000);
     return () => clearTimeout(timer);
   }, [error]);
 
   return (
-    <Modal isOpen={errorOpen} setIsOpen={setErrorOpen}>
+    <Modal isOpen={isErrorOpen} setIsOpen={setIsErrorOpen}>
       <div className="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 " role="alert">
-        <p className="text-lg md:text-3xl">{error.errorDescription}</p>
+        <p className="text-lg md:text-3xl">{error?.message}</p>
       </div>
     </Modal>
   );
