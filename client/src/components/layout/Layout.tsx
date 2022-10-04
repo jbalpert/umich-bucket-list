@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
-import { UseUser } from "../../contexts/UserContext";
-import { GlobalStateProvider, UseGlobalState } from "../../contexts/GlobalStateContext";
+import { UseGlobalState } from "../../contexts/GlobalStateContext";
 import Navbar from "./navbar/Navbar";
 import Loading from "../Loading";
 import SettingsModal from "../modals/settings/SettingsModal";
@@ -13,17 +12,7 @@ type Props = {
 };
 
 const Layout: React.FC<Props> = ({ children }) => {
-  const {
-    setEvents,
-    loading,
-    setLoading,
-    setIsFirstLogin,
-    setIsSettingsOpen,
-    isErrorOpen,
-    isSettingsOpen,
-    googleLogin,
-    events,
-  } = UseGlobalState();
+  const { setEvents, loading, setLoading, isErrorOpen, isSettingsOpen, events } = UseGlobalState();
   useEffect(() => {
     setLoading(true);
     eventApi
@@ -31,7 +20,6 @@ const Layout: React.FC<Props> = ({ children }) => {
       .then((res) => {
         console.log(res.data);
         setEvents(res.data as IEvent[]);
-        console.log(events);
       })
       .catch((err) => {
         console.log(err);
@@ -42,16 +30,15 @@ const Layout: React.FC<Props> = ({ children }) => {
   if (loading) {
     return <Loading />;
   }
+  console.log(events);
   return (
     <>
-      <GlobalStateProvider>
-        <div>
-          <Navbar />
-          {isErrorOpen && <ErrorModal />}
-          {isSettingsOpen && <SettingsModal />}
-          {children}
-        </div>
-      </GlobalStateProvider>
+      <div>
+        <Navbar />
+        {isErrorOpen && <ErrorModal />}
+        {isSettingsOpen && <SettingsModal />}
+        {children}
+      </div>
     </>
   );
 };

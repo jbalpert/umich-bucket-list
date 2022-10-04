@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import EventHero from "./components/events/EventHero";
 import { UserProvider } from "./contexts/UserContext";
+import { GlobalStateProvider } from "./contexts/GlobalStateContext";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -13,9 +14,11 @@ const App = () => {
       element: (
         <UserProvider>
           <GoogleOAuthProvider clientId="547050767462-1fqgve22mt23cc84v7k6rlhnoa06athm.apps.googleusercontent.com">
-            <Layout>
-              <EventHero />
-            </Layout>
+            <GlobalStateProvider>
+              <Layout>
+                <EventHero />
+              </Layout>
+            </GlobalStateProvider>
           </GoogleOAuthProvider>
         </UserProvider>
       ),

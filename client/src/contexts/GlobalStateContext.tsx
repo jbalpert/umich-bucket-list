@@ -105,7 +105,6 @@ const GlobalStateProvider: React.FC<Props> = ({ children }) => {
         // Google Login Function
         googleLogin: googleLogin,
       }}>
-      {" "}
       {children}
     </GlobalStateContext.Provider>
   );
