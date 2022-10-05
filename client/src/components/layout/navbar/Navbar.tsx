@@ -5,6 +5,10 @@ import { UseGlobalState } from "../../../contexts/GlobalStateContext";
 const Navbar: React.FC = () => {
   // send request to backend to get user info
   const [user, setUser] = UseUser();
+  const logoutHandler = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
   const { setIsSettingsOpen, googleLogin } = UseGlobalState();
   return (
     <nav className="flex items-center justify-between flex-wrap bg-navbarBG p-6">
@@ -27,7 +31,7 @@ const Navbar: React.FC = () => {
               <span className="text-white font-semibold hidden md:block">{user.first_name}</span>
             </div>
             <button
-              onClick={() => setUser(null)}
+              onClick={() => logoutHandler()}
               className="bg-secondary hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full ml-4 hidden md:block">
               Logout
             </button>

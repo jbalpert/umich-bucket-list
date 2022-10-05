@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
 import EventsGrid from "./EventsGrid";
 import { UseUser } from "../../contexts/UserContext";
-import { UseGlobalState } from "../../contexts/GlobalStateContext";
 const EventHero: React.FC = () => {
   const [user] = UseUser();
   return (

@@ -13,9 +13,11 @@ export interface IEvent {
     location: string;
     start_date: string;
     end_date: string;
+    image_url: string;
     rsvps: IRsvp[];
     approval: boolean;
     creator: string;
+    joined: boolean;
     created_at?: Date;
 }
 
@@ -124,8 +126,11 @@ export interface IGlobalState {
     // Event Modal
     isEventOpen: boolean;
     setIsEventOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    eventModalData: IEvent | null;
-    setEventModalData: React.Dispatch<React.SetStateAction<IEvent | null>>;
+    eventModalId: number;
+    setEventModalId: React.Dispatch<React.SetStateAction<number>>;
+
+    rsvpHandler: (event_id: string) => void;
+    unrsvpHandler: (event_id: string) => void;
 
     googleLogin: () => void;
 
@@ -135,16 +140,5 @@ export interface IGlobalState {
     // setIsCreateEventOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
 }
-
-// export interface IModal {
-//     title: string;
-//     isOpen: boolean;
-//     component: React.ReactNode;
-// }
-
-// export interface IModalContext {
-//     modal: IModal[];
-//     setModal: React.Dispatch<React.SetStateAction<IModal[]>>;
-// }
 
 export type IUserContext = [IUser | null, React.Dispatch<React.SetStateAction<IUser | null>>];

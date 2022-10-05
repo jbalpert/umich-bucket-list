@@ -19,6 +19,7 @@ export interface IEvent extends mongoose.Document {
     rsvps: Array<IRsvp>;
     approval: boolean;
     creator: string;
+    image_url: string;
     created_at?: Date;
 }
 
@@ -52,6 +53,11 @@ const eventSchema = new Schema({
         type: Date,
         default: new Date(),
         required: true,
+    },
+    image_url: {
+        type: String,
+        required: true,
+        default: "https://www.collegeevaluator.com/images/institute/170976-university-of-michigan-ann-arbor.jpg"
     },
     creator: {
         type: Schema.Types.ObjectId,

@@ -16,7 +16,7 @@ export const googleAuthService = async (code: string) => {
             first_name: decoded.given_name,
             last_name: decoded.family_name,
             profile_picture: decoded.picture,
-            username: decoded.email.split('@')[0]
+            username: decoded.name
         }
         const newUser = await createUserService(user);
         return { userFromDB: newUser, isNewUser: true };
