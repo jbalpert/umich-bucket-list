@@ -1,10 +1,8 @@
 import { useEffect } from "react";
-
-interface Props {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { UseGlobalState } from "../contexts/GlobalStateContext";
 // Super crazy loading animation spinner
-const Loading: React.FC<Props> = ({ setLoading }: Props) => {
+const Loading: React.FC = () => {
+  const { setLoading } = UseGlobalState();
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);

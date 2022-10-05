@@ -91,6 +91,51 @@ export interface Env {
 export interface Request {
 }
 
+export interface IError {
+    header: string;
+    message: string;
+}
+
+export interface IGlobalState {
+    // User
+    isFirstLogin: boolean;
+    setIsFirstLogin: React.Dispatch<React.SetStateAction<boolean>>;
+
+    // Loading State
+    loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+
+    // Events
+    events: IEvent[];
+    setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
+
+    // ******* Modal State ******* //
+
+    // Error Handling Modal
+    isErrorOpen: boolean;
+    setIsErrorOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    error: IError | null;
+    setError: React.Dispatch<React.SetStateAction<IError | null>>;
+
+    // Settings Modal
+    isSettingsOpen: boolean;
+    setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+    // Event Modal
+    isEventOpen: boolean;
+    setIsEventOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    eventModalData: IEvent | null;
+    setEventModalData: React.Dispatch<React.SetStateAction<IEvent | null>>;
+
+    googleLogin: () => void;
+
+    // TODO - Create Event Modal -
+    // Create Event Modal
+    // isCreateEventOpen: boolean;
+    // setIsCreateEventOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+}
+
 // export interface IModal {
 //     title: string;
 //     isOpen: boolean;
@@ -100,13 +145,6 @@ export interface Request {
 // export interface IModalContext {
 //     modal: IModal[];
 //     setModal: React.Dispatch<React.SetStateAction<IModal[]>>;
-// }
-
-// export interface IGlobalState {
-//     userState: IUserContext;
-//     modalState: IModalContext;
-//     isFirstLogin: boolean;
-//     googleLogin: () => void;
 // }
 
 export type IUserContext = [IUser | null, React.Dispatch<React.SetStateAction<IUser | null>>];

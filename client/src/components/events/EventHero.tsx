@@ -1,28 +1,9 @@
 import { useState, useEffect } from "react";
 import EventsGrid from "./EventsGrid";
-import { eventApi } from "../../api/event";
 import { UseUser } from "../../contexts/UserContext";
-
-interface Props {
-  googleLogin: () => void;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const EventHero: React.FC<Props> = ({ googleLogin, setLoading }: Props) => {
+import { UseGlobalState } from "../../contexts/GlobalStateContext";
+const EventHero: React.FC = () => {
   const [user] = UseUser();
-  const [events, setEvents] = useState([]);
-  useEffect(() => {
-    setLoading(true);
-    eventApi
-      .getCurrentEvents()
-      .then((res) => {
-        setEvents(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setLoading(false);
-  }, []);
   return (
     <div className="bg-appBG flex flex-col items-center justify-center">
       <h1 className="text-center mt-12 text-2xl sm:text-3xl text-slate-300 mx-8">
@@ -41,7 +22,7 @@ const EventHero: React.FC<Props> = ({ googleLogin, setLoading }: Props) => {
         </a>
       )}
       <div className="max-w-5xl my-8">
-        <EventsGrid googleLogin={googleLogin} events={events} />
+        <EventsGrid />
       </div>
     </div>
   );
