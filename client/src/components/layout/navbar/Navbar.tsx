@@ -2,6 +2,7 @@
 
 import { UseUser } from "../../../contexts/UserContext";
 import { UseGlobalState } from "../../../contexts/GlobalStateContext";
+import { Link } from "react-router-dom";
 const Navbar: React.FC = () => {
   // send request to backend to get user info
   const [user, setUser] = UseUser();
@@ -12,10 +13,10 @@ const Navbar: React.FC = () => {
   const { setIsSettingsOpen, googleLogin } = UseGlobalState();
   return (
     <nav className="flex items-center justify-between flex-wrap bg-navbarBG p-6">
-      <div className="flex items-center flex-shrink-0 text-umMaize mr-2 sm:mr-6">
+      <a href="/" className="flex items-center flex-shrink-0 text-umMaize mr-2 sm:mr-6">
         <img src="/umichbucketlogo.png" alt="logo" className="h-8 w-8 sm:h-12 sm:w-12 mr-2" />
         <span className="font-semibold text-xl sm:text-3xl tracking-tight">Umich Bucket List</span>
-      </div>
+      </a>
       <div>
         {user ? (
           <div className="flex items-center">

@@ -11,6 +11,20 @@ const EventCard = ({ event, eventIndex }: Props) => {
   const [user] = UseUser();
   const { setEventModalId, setIsEventOpen, rsvpHandler, unrsvpHandler, setEvents } =
     UseGlobalState();
+
+  const [rsvpLoading, setRsvpLoading] = useState<boolean>(false);
+  const rsvpHandlerWrapper = async () => {
+    setRsvpLoading(true);
+    await rsvpHandler(event._id);
+    setRsvpLoading(false);
+  };
+
+  const unrsvpHandlerWrapper = async () => {
+    setRsvpLoading(true);
+    await unrsvpHandler(event._id);
+    setRsvpLoading(false);
+  };
+
   useEffect(() => {
     if (!user) {
       // set joined to false if user is not logged in for event in setEvents
@@ -34,7 +48,6 @@ const EventCard = ({ event, eventIndex }: Props) => {
     }
   }, [user]);
   const eventModalOpenHandler = () => {
-    console.log("eventIndex", eventIndex);
     setEventModalId(eventIndex);
     setIsEventOpen(true);
   };
@@ -70,17 +83,18 @@ const EventCard = ({ event, eventIndex }: Props) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-row lg:pb-0 pb-4 justify-around font-bold leading-none text-gray-800 uppercase rounded lg:flex-col lg:items-center lg:justify-center lg:w-1/4">
-          <div
-            onClick={joined ? () => unrsvpHandler(_id) : () => rsvpHandler(_id)}
-            className={`flex flex-row items-center justify-center w-24 h-10 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 cursor-pointer ${
+        <div className="flex flex-row lg:pb-0 pb-4 justify-around font-bold leading-none text-gray-800 rounded lg:flex-col lg:items-center lg:justify-center lg:w-1/4">
+          <button
+            disabled={rsvpLoading}
+            onClick={joined ? () => unrsvpHandlerWrapper() : () => rsvpHandlerWrapper()}
+            className={`flex flex-row items-center justify-center w-24 h-10 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 cursor-pointer disabled:opacity-40 uppercase ${
               joined
                 ? "bg-red-500 hover:bg-red-600 active:bg-red-600"
                 : "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-600"
             } border border-transparent rounded-lg focus:outline-none focus:shadow-outline-yellow`}>
             <span className="mr-2">{joined ? "-" : "+"}</span>
             <span>{joined ? "leave" : "join"}</span>
-          </div>
+          </button>
         </div>
       </div>
     </div>

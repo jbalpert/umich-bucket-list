@@ -6,26 +6,29 @@ import { authApi } from "../api/auth";
 import { eventApi } from "../api/event";
 import { UseUser } from "./UserContext";
 
+// Default values for global state
 const GlobalStateContext = createContext<IGlobalState>({
   loading: false,
-  isFirstLogin: true,
   setLoading: () => {},
-  isErrorOpen: false,
-  events: [],
-  isSettingsOpen: false,
-  isEventOpen: false,
-  error: null,
-  eventModalId: -1,
-  setError: () => {},
-  googleLogin: () => {},
-  setIsErrorOpen: () => {},
-  setEvents: () => {},
-  setIsSettingsOpen: () => {},
-  setIsEventOpen: () => {},
+  isFirstLogin: true,
   setIsFirstLogin: () => {},
+  isErrorOpen: false,
+  setIsErrorOpen: () => {},
+  error: null,
+  setError: () => {},
+  events: [],
+  setEvents: () => {},
+  isSettingsOpen: false,
+  setIsSettingsOpen: () => {},
+  isEventOpen: false,
+  setIsEventOpen: () => {},
+  eventModalId: -1,
   setEventModalId: () => {},
-  rsvpHandler: () => {},
-  unrsvpHandler: () => {},
+  isEventFormOpen: false,
+  setIsEventFormOpen: () => {},
+  rsvpHandler: () => Promise.resolve(),
+  unrsvpHandler: () => Promise.resolve(),
+  googleLogin: () => {},
 });
 
 type Props = {
@@ -46,6 +49,7 @@ const GlobalStateProvider: React.FC<Props> = ({ children }) => {
   const [isEventOpen, setIsEventOpen] = useState<boolean>(false);
   const [eventModalId, setEventModalId] = useState<number>(-1);
   const [user, setUser] = UseUser();
+  const [isEventFormOpen, setIsEventFormOpen] = useState<boolean>(false);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async ({ code }) => {
@@ -84,35 +88,44 @@ const GlobalStateProvider: React.FC<Props> = ({ children }) => {
   const rsvpHandler = async (event_id: string) => {
     if (!user) {
       googleLogin();
-    } else {
-      await eventApi.rsvpEvent(event_id, user._id);
-      setUser({ ...user, events: [...user.events, event_id] });
-      setEvents(
-        events.map((event) => {
-          if (event._id === event_id) {
-            return { ...event, joined: true };
-          }
-          return event;
-        })
-      );
     }
+    if (!user) return;
+    await eventApi.rsvpEvent(event_id, user._id);
+    setUser({ ...user, events: [...user.events, event_id] });
+    // add user id to rsvp list
+    setEvents(
+      events.map((event) => {
+        if (event._id === event_id) {
+          return {
+            ...event,
+            joined: true,
+            rsvps: [...event.rsvps, { userid: user._id }],
+          };
+        }
+        return event;
+      })
+    );
   };
 
   const unRsvpHandler = async (event_id: string) => {
     if (!user) {
       googleLogin();
-    } else {
-      await eventApi.unrsvpEvent(event_id, user._id);
-      setUser({ ...user, events: user.events.filter((e) => e !== event_id) });
-      setEvents(
-        events.map((event) => {
-          if (event._id === event_id) {
-            return { ...event, joined: false };
-          }
-          return event;
-        })
-      );
     }
+    if (!user) return;
+    await eventApi.unrsvpEvent(event_id, user._id);
+    setUser({ ...user, events: user.events.filter((e) => e !== event_id) });
+    setEvents(
+      events.map((event) => {
+        if (event._id === event_id) {
+          return {
+            ...event,
+            joined: false,
+            rsvps: event.rsvps.filter((rsvp) => rsvp.userid !== user._id),
+          };
+        }
+        return event;
+      })
+    );
   };
 
   const globalState = {
@@ -139,6 +152,10 @@ const GlobalStateProvider: React.FC<Props> = ({ children }) => {
     setIsEventOpen: setIsEventOpen,
     eventModalId: eventModalId,
     setEventModalId: setEventModalId,
+
+    // Event Form Modal
+    isEventFormOpen: isEventFormOpen,
+    setIsEventFormOpen: setIsEventFormOpen,
 
     // rsvp
     rsvpHandler: rsvpHandler,

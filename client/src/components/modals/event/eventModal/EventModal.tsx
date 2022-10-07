@@ -1,13 +1,72 @@
-import { UseGlobalState } from "../../../contexts/GlobalStateContext";
-import { UseUser } from "../../../contexts/UserContext";
-import Modal from "../../modals/Modal";
-import { useState, useEffect } from "react";
+import { UseGlobalState } from "../../../../contexts/GlobalStateContext";
+import Modal from "../../Modal";
+import { userApi } from "../../../../api/user";
+import { useEffect, useState } from "react";
+import { IUser, IUserBubble } from "../../../../types";
+import UserBubbleList from "./userBubble/UserBubbleList";
+import { UseUser } from "../../../../contexts/UserContext";
 
 const EventModal: React.FC = () => {
   const { setIsEventOpen, isEventOpen, unrsvpHandler, rsvpHandler, events, eventModalId } =
     UseGlobalState();
-  const { start_date, end_date, description, title, location, image_url, joined, _id } =
+  // Get all the users based on event rsvps
+  const [user] = UseUser();
+  const { start_date, end_date, description, title, location, image_url, joined, _id, rsvps } =
     events[eventModalId];
+  const [userBubbles, setUserBubbles] = useState<IUserBubble[]>([]);
+  const [rsvpLoading, setRsvpLoading] = useState<boolean>(false);
+  const unrvspAndChangeBubble = async () => {
+    setRsvpLoading(true);
+    await unrsvpHandler(_id);
+    if (user) {
+      setUserBubbles(userBubbles.filter((userProfile) => userProfile._id !== user._id));
+    }
+    setRsvpLoading(false);
+  };
+
+  const rvspAndChangeBubble = async () => {
+    setRsvpLoading(true);
+    await rsvpHandler(_id);
+    if (user) {
+      setUserBubbles([...userBubbles, user]);
+    }
+    setRsvpLoading(false);
+  };
+
+  useEffect(() => {
+    const getUsers = async () => {
+      // if there are no rsvps, then don't make the api call
+      if (rsvps.length === 0) return;
+      // if the bubble length is the rsvp length then don't make the api call
+      if (userBubbles.length === rsvps.length) return;
+      if (localStorage.getItem(`userBubbles-${_id}`)) {
+        const bubbles: IUser[] = JSON.parse(localStorage.getItem(`userBubbles-${_id}`) || "[]");
+        if (bubbles.length === rsvps.length) {
+          setUserBubbles(bubbles);
+          return;
+        }
+      }
+      // cache the users in local storage
+      const res = await userApi.getUsersByEventId(_id);
+      // turn res.data into User
+
+      setUserBubbles(res.data);
+      localStorage.setItem(
+        `userBubbles-${_id}`,
+        JSON.stringify(
+          (res.data as IUser[]).map((user) => {
+            return {
+              _id: user._id,
+              username: user.username,
+              profile_picture: user.profile_picture,
+              is_public: user.is_public,
+            };
+          })
+        )
+      );
+    };
+    getUsers();
+  }, [_id, rsvps, userBubbles.length]);
 
   const shareHandler = () => {
     if (navigator.share) {
@@ -53,7 +112,7 @@ const EventModal: React.FC = () => {
               </div>
               <div className="border-b border-gray-100"></div>
               <div className="text-gray-400 font-medium text-sm mb-7 mt-6 mx-3 px-2 flex justify-center items-center">
-                <img className="rounded max-h-80 shadow-lg" src={image_url} />
+                <img className="rounded max-h-80 shadow-lg" alt={title} src={image_url} />
               </div>
               <div className="flex flex-col justify-between mx-3 px-2 mb-4">
                 <div className="flex flex-row items-center">
@@ -85,38 +144,20 @@ const EventModal: React.FC = () => {
                       />
                     </svg>
                   </span>
-                  <img
-                    className="inline-block object-cover w-8 h-8 text-white border-2 border-white rounded-full shadow-sm cursor-pointer"
-                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
-                  <img
-                    className="inline-block object-cover w-8 h-8 -ml-2 text-white border-2 border-white rounded-full shadow-sm cursor-pointer"
-                    src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
-                  <img
-                    className="inline-block object-cover w-8 h-8 -ml-2 text-white border-2 border-white rounded-full shadow-sm cursor-pointer"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80"
-                    alt=""
-                  />
-                  <img
-                    className="inline-block object-cover w-8 h-8 -ml-2 text-white border-2 border-white rounded-full shadow-sm cursor-pointer"
-                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
-                    alt=""
-                  />
+                  <UserBubbleList users={userBubbles} />
                 </div>
-                <div className="flex justify-end w-full mt-1 pt-2 pr-5">
-                  <div
-                    onClick={joined ? () => unrsvpHandler(_id) : () => rsvpHandler(_id)}
-                    className={`flex flex-row items-center justify-center w-24 h-10 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 cursor-pointer uppercase ${
+                <div className="flex justify-end w-full mt-1 pt-2 lg:pr-5 pr-3">
+                  <button
+                    disabled={rsvpLoading}
+                    onClick={joined ? () => unrvspAndChangeBubble() : () => rvspAndChangeBubble()}
+                    className={`flex flex-row items-center justify-center w-18 h-7.5 md:w-24 md:h-10 px-4 py-2 text-xs md:text-sm font-medium leading-5 text-white transition-colors duration-150 cursor-pointer uppercase ${
                       joined
                         ? "bg-red-500 hover:bg-red-600 active:bg-red-600"
                         : "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-600"
                     } border border-transparent rounded-lg focus:outline-none focus:shadow-outline-yellow`}>
                     <span className="mr-2">{joined ? "-" : "+"}</span>
                     <span>{joined ? "leave" : "join"}</span>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>

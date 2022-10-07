@@ -3,17 +3,19 @@ import React, { useEffect } from "react";
 import { UseUser } from "../../contexts/UserContext";
 import { UseGlobalState } from "../../contexts/GlobalStateContext";
 import Navbar from "./navbar/Navbar";
+import Footer from "./footer/Footer";
 import Loading from "../Loading";
 import SettingsModal from "../modals/settings/SettingsModal";
 import ErrorModal from "../modals/error/ErrorModal";
-import EventModal from "../modals/event/EventModal";
+import EventModal from "../modals/event/eventModal/EventModal";
 import { eventApi } from "../../api/event";
 import { IEvent } from "../../types";
+
 type Props = {
   children: React.ReactNode;
 };
 
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout: React.FC<Props> = ({ children }: Props) => {
   const {
     setEvents,
     loading,
@@ -24,14 +26,16 @@ const Layout: React.FC<Props> = ({ children }) => {
     isEventOpen,
     setIsEventOpen,
     setEventModalId,
+    setIsFirstLogin,
   } = UseGlobalState();
 
-  const [_, setUser] = UseUser();
+  const [, setUser] = UseUser();
   useEffect(() => {
     setLoading(true);
 
     if (localStorage.getItem("user")) {
       setUser(JSON.parse(localStorage.getItem("user") || "") || null);
+      setIsFirstLogin(false);
     }
 
     eventApi
@@ -69,6 +73,7 @@ const Layout: React.FC<Props> = ({ children }) => {
         {isSettingsOpen && <SettingsModal />}
         {isEventOpen && <EventModal />}
         {children}
+        <Footer />
       </div>
     </>
   );

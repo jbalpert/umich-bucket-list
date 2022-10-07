@@ -1,8 +1,8 @@
 import React from "react";
 
 export interface IRsvp {
-    _id: string;
-    created: Date;
+    _id?: string;
+    created?: Date;
     userid: string;
 }
 
@@ -19,6 +19,17 @@ export interface IEvent {
     creator: string;
     joined: boolean;
     created_at?: Date;
+}
+
+export interface IEventForm {
+    title: string;
+    description: string;
+    location: string;
+    start_date: string;
+    end_date: string;
+    image_url: string;
+    creator: string;
+    rsvps: string[];
 }
 
 export interface IUserCredentials {
@@ -63,6 +74,13 @@ export interface IUser {
     phone?: string;
     events: Array<string>;
     __v: number;
+}
+
+export interface IUserBubble {
+    _id: string;
+    username: string;
+    profile_picture: string;
+    is_public: boolean;
 }
 
 export interface Config {
@@ -129,15 +147,16 @@ export interface IGlobalState {
     eventModalId: number;
     setEventModalId: React.Dispatch<React.SetStateAction<number>>;
 
-    rsvpHandler: (event_id: string) => void;
-    unrsvpHandler: (event_id: string) => void;
+    // Event Form Modal
+    isEventFormOpen: boolean;
+    setIsEventFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+    rsvpHandler: (event_id: string) => Promise<void>;
+    unrsvpHandler: (event_id: string) => Promise<void>;
 
     googleLogin: () => void;
 
-    // TODO - Create Event Modal -
-    // Create Event Modal
-    // isCreateEventOpen: boolean;
-    // setIsCreateEventOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
 
 }
 
