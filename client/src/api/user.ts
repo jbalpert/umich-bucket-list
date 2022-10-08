@@ -1,5 +1,4 @@
 import axiosClient from ".";
-import { IUser } from "../types";
 const USER_URL = "/user";
 
 export const userApi = {

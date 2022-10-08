@@ -47,6 +47,8 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
         console.log(err);
       });
     setLoading(false);
+    // TODO is this correct?
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -60,19 +62,24 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
         window.history.replaceState({}, document.title, "/");
       }
     }
+    // TODO is this correct?
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events]);
 
   if (loading) {
     return <Loading />;
   }
+  // div takes up full screen height
   return (
     <>
-      <div>
-        <Navbar />
-        {isErrorOpen && <ErrorModal />}
-        {isSettingsOpen && <SettingsModal />}
-        {isEventOpen && <EventModal />}
-        {children}
+      <div className="flex flex-col min-h-screen justify-between">
+        <div>
+          <Navbar />
+          {isErrorOpen && <ErrorModal />}
+          {isSettingsOpen && <SettingsModal />}
+          {isEventOpen && <EventModal />}
+          {children}
+        </div>
         <Footer />
       </div>
     </>

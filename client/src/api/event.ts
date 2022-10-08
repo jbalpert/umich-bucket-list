@@ -1,5 +1,5 @@
 import axiosClient from ".";
-import { IEvent, IEventForm } from "../types";
+import { IEventForm } from "../types";
 const EVENT_URL = "/event";
 
 const today = new Date().toISOString();

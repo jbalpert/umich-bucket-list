@@ -11,5 +11,7 @@
     "allowJs": true,
     "outDir": "dist",
     "rootDir": "src"
-  }
+  },
+  "include": ["src/**/*", "package.json"],
+  "exclude": ["node_modules", "dist", "client/node_modules", "client/build"]
 }

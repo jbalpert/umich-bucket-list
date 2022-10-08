@@ -1,7 +1,7 @@
 import { UseUser } from "../../../contexts/UserContext";
 import { userApi } from "../../../api/user";
 import { useState } from "react";
-import Modal from "../../modals/Modal";
+import Modal from "../Modal";
 import { UseGlobalState } from "../../../contexts/GlobalStateContext";
 
 interface Settings {

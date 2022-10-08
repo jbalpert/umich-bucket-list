@@ -14,7 +14,7 @@ const ErrorModal: React.FC = () => {
       setIsErrorOpen(false);
     }, 5000);
     return () => clearTimeout(timer);
-  }, [error]);
+  }, [error, setError, setIsErrorOpen]);
 
   return (
     <Modal isOpen={isErrorOpen} setIsOpen={setIsErrorOpen}>

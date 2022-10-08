@@ -2,7 +2,7 @@
 
 import { UseUser } from "../../../contexts/UserContext";
 import { UseGlobalState } from "../../../contexts/GlobalStateContext";
-import { Link } from "react-router-dom";
+
 const Navbar: React.FC = () => {
   // send request to backend to get user info
   const [user, setUser] = UseUser();

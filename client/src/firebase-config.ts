@@ -4,6 +4,6 @@ export const firebaseConfig = {
     projectId: "umich-bucket-list",
     storageBucket: "umich-bucket-list.appspot.com",
     messagingSenderId: "547050767462",
-    appId: "1:547050767462:web:fc41a366de4079261d19a7",
-    measurementId: "G-KDH9XR7M02",
+    appId: "1:547050767462:web:28a64ef26f6918ba1d19a7",
+    measurementId: "G-FE47PXK8MF"
 };

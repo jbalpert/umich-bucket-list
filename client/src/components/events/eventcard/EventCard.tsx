@@ -46,12 +46,12 @@ const EventCard = ({ event, eventIndex }: Props) => {
         return newEvents;
       });
     }
-  }, [user]);
+  }, [user, setEvents]);
   const eventModalOpenHandler = () => {
     setEventModalId(eventIndex);
     setIsEventOpen(true);
   };
-  const { title, description, location, joined, _id } = event;
+  const { title, description, location, joined } = event;
   const startDate = new Date(event.start_date);
   const month = startDate.toLocaleString("default", { month: "short" });
   const day = startDate.getDate();
