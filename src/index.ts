@@ -7,7 +7,6 @@ import bodyParser from "body-parser";
 import eventRouter from "./routes/event";
 import userRouter from "./routes/user";
 import authRouter from "./routes/auth"
-import path from "path";
 
 const app = express();
 
@@ -15,10 +14,11 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors(
     {
-        origin: "http://localhost:5000",
+        origin: ["https://www.umichbucketlist.com", "http://localhost:3000", "http://localhost:5000"],
         credentials: true,
     }
 ));
+
 app.use("/api/v1/event", eventRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);

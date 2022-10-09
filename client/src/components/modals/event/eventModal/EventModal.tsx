@@ -107,8 +107,25 @@ const EventModal: React.FC = () => {
         <div className="flex max-w-xl my-10 bg-white shadow-md rounded-lg overflow-hidden mx-auto">
           <div className="flex items-center w-full">
             <div className="w-full">
-              <div className="flex flex-col px-2 py-3 mx-3">
-                <h1 className="text-center font-bold text-2xl text-gray-700">{title}</h1>
+              <div className="flex items-center justify-between px-2 py-3 mx-3">
+                <h1 className="text-gray-700 font-bold text-2xl">{title}</h1>
+                <button
+                  className="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:bg-gray-200"
+                  onClick={() => setIsEventOpen(false)}>
+                  <svg
+                    className="h-6 w-6 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
               <div className="border-b border-gray-100"></div>
               <div className="text-gray-400 font-medium text-sm mb-7 mt-6 mx-3 px-2 flex justify-center items-center">
