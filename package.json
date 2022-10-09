@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "npm install --prefix client && npm run build --prefix client && ts-node src/index.ts",
-    "dev": "nodemon src/index.ts",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "start": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+  },
+  "engines": {
+    "node": "v16.13.0"
   },
   "keywords": [],
   "author": "",
